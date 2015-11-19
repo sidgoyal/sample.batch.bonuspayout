@@ -1,0 +1,45 @@
+description = 'WAS Liberty Sample - Batch BonusPayout Server Configuration and Database Table Creation'
+
+dependencies {
+    classpath "de.undercouch:gradle-download-task:2.0.0"
+  }
+
+
+apply plugin: "de.undercouch.download"
+
+download{
+	src 'http://central.maven.org/maven2/org/apache/derby/derby/10.12.1.1/derby-10.12.1.1.jar'
+dest ':root'
+}
+
+
+defaultTasks 'buildSequence'
+
+
+dependencies {
+	build project(':batch-bonuspayout')
+}
+
+//task deleteFiles(type: Delete) {
+//	println "inside deleteFiles"
+ //  	delete fileTree('servers/logs') {
+//        	include '**/*'
+//    }
+//	delete fileTree('servers/dropins') {
+//        	include '**/*'
+//    }
+//	delete fileTree('servers/workarea') {
+ //      		 include '**/*'
+//    }
+//}
+
+task buildSequence {
+	doLast{
+		println "inside Sequence"
+	}
+}
+
+buildSequence.dependsOn(":batch-bonuspayout:build")
+
+
+

@@ -1,0 +1,6 @@
+rootProject.name = 'batch-bonuspayout.parent'
+include ':batch-bonuspayout'
+include ':batch-bonuspayout-wlpcfg'
+
+project(':batch-bonuspayout').projectDir = "$rootDir/batch-bonuspayout-application" as File
+project(':batch-bonuspayout-wlpcfg').projectDir = "$rootDir/batch-bonuspayout-wlpcfg" as File
