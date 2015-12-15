@@ -20,11 +20,10 @@
     xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/jobXML_1_0.xsd"
 	version="1.0">
 	<properties>
+		<property name="databaseName" value="#{jobParameters['databaseName']}?:cloudant-bonuspayout;" />
 		<property name="numRecords" value="#{jobParameters['numRecords']}?:1000;" />
 		<property name="chunkSize" value="#{jobParameters['chunkSize']}?:100;" />
-		<property name="dsJNDI" value="#{jobParameters['dsJNDI']}?:java:comp/env/jdbc/BonusPayoutDS;" />
 		<property name="bonusAmount" value="#{jobParameters['bonusAmount']}?:100;" />
-		<property name="tableName" value="#{jobParameters['tableName']}?:BONUSPAYOUT.ACCOUNT;" />
 
 		<!-- These next two will be accessed via the JobContext, rather than via injected 
 			through @Inject @BatchProperty injection -->
@@ -58,8 +57,7 @@
 			<writer
 				ref="com.ibm.websphere.samples.batch.artifacts.AccountJDBCWriter">
 				<properties>
-					<property name="dsJNDI" value="#{jobProperties['dsJNDI']}" />
-					<property name="tableName" value="#{jobProperties['tableName']}" />
+					<property name="databaseName" value="#{jobProperties['databaseName']}" />
 				</properties>
 			</writer>
 		</chunk>
@@ -72,8 +70,7 @@
 				ref="com.ibm.websphere.samples.batch.artifacts.ValidationDBReadChunkListener">
 				<properties>
 					<property name="chunkSize" value="#{jobProperties['chunkSize']}" />
-					<property name="dsJNDI" value="#{jobProperties['dsJNDI']}" />
-					<property name="tableName" value="#{jobProperties['tableName']}" />
+					<property name="databaseName" value="#{jobProperties['databaseName']}" />
 				</properties>
 			</listener>
 			<listener ref="com.ibm.websphere.samples.batch.artifacts.ForceFailureReadListener">

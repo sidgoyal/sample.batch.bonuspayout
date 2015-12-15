@@ -17,8 +17,6 @@
 package com.ibm.websphere.samples.batch.artifacts;
 
 import java.io.Serializable;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -27,10 +25,9 @@ import javax.batch.api.chunk.AbstractItemWriter;
 import javax.batch.api.chunk.ItemWriter;
 import javax.batch.runtime.context.JobContext;
 import javax.inject.Inject;
-import javax.sql.DataSource;
 
 import com.ibm.websphere.samples.batch.beans.AccountDataObject;
-import com.ibm.websphere.samples.batch.util.BonusPayoutUtils;
+import com.ibm.websphere.samples.batch.cloudant.BonusPayoutCloudantClient;
 import com.ibm.websphere.samples.batch.util.BonusPayoutConstants;
 
 /**
@@ -43,43 +40,46 @@ public class AccountJDBCWriter extends AbstractItemWriter implements ItemWriter,
     private final static Logger logger = Logger.getLogger(BONUS_PAYOUT_LOGGER);
 
     @Inject
-    @BatchProperty
-    private String dsJNDI;
-
-    @Inject
-    @BatchProperty
-    private String tableName;
+    @BatchProperty(name = "databaseName")
+    private String databaseName;
 
     @Inject
     private JobContext jobCtx;
 
-    private DataSource ds = null;
+    
+	private BonusPayoutCloudantClient client;
 
     @Override
     public void open(Serializable checkpoint) throws Exception {
-        ds = BonusPayoutUtils.lookupDataSource(dsJNDI);
-        BonusPayoutUtils.validateTableName(tableName);
+    	System.out.println("[DEBUG] databaseName " + databaseName);
+    	client  = new BonusPayoutCloudantClient(databaseName);
     }
 
     @Override
     public void writeItems(List<Object> items) throws Exception {
-        Connection conn = ds.getConnection();
-        String sql = "INSERT INTO " + tableName + " VALUES (?,?,?,?)";
-        PreparedStatement ps = conn.prepareStatement(sql);
-        for (Object obj : items) {
-            AccountDataObject ado = AccountDataObject.class.cast(obj);
-            ps.setInt(1, ado.getAccountNumber());
-            ps.setInt(2, ado.getBalance());
-            ps.setLong(3, jobCtx.getInstanceId());
-            ps.setString(4, ado.getAccountCode());
-            ps.addBatch();
-        }
-        logger.fine("Adding: " + items.size() + " items to table name: " + tableName + " via batch update");
-        ps.executeBatch();
-        logger.fine("Executed batch update.");
-        ps.clearBatch();
-        ps.close();
-        conn.close();
+    	
+    	for (Object obj : items) {
+    		AccountDataObject ado = AccountDataObject.class.cast(obj);
+    		client.addAccount(ado, jobCtx.getInstanceId());
+    	}
     }
+//        Connection conn = ds.getConnection();
+//        String sql = "INSERT INTO " + tableName + " VALUES (?,?,?,?)";
+//        PreparedStatement ps = conn.prepareStatement(sql);
+//        for (Object obj : items) {
+//            AccountDataObject ado = AccountDataObject.class.cast(obj);
+//            ps.setInt(1, ado.getAccountNumber());
+//            ps.setInt(2, ado.getBalance());
+//            ps.setLong(3, jobCtx.getInstanceId());
+//            ps.setString(4, ado.getAccountCode());
+//            ps.addBatch();
+//        }
+//        logger.fine("Adding: " + items.size() + " items to table name: " + tableName + " via batch update");
+//        ps.executeBatch();
+//        logger.fine("Executed batch update.");
+//        ps.clearBatch();
+//        ps.close();
+//        conn.close();
+//    }
 
 }

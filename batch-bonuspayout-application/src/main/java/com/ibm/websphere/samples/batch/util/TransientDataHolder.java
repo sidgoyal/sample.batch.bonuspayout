@@ -16,7 +16,9 @@
  */
 package com.ibm.websphere.samples.batch.util;
 
-import java.sql.ResultSet;
+import java.util.Iterator;
+
+import com.ibm.websphere.samples.batch.cloudant.AccountModel;
 
 /**
  * Helper class to provide more organized access to the
@@ -24,21 +26,21 @@ import java.sql.ResultSet;
  */
 public class TransientDataHolder {
 
-    private ResultSet resultSet;
+    private Iterator<AccountModel> accountsListIterator;
     private Integer recordNumber;
 
     /**
      * @return the resultSet
      */
-    public ResultSet getResultSet() {
-        return resultSet;
+    public Iterator<AccountModel>  getAccountsListIterator() {
+        return accountsListIterator;
     }
 
     /**
      * @param resultSet the resultSet to set
      */
-    public void setResultSet(ResultSet resultSet) {
-        this.resultSet = resultSet;
+    public void setAccountsListIterator(Iterator<AccountModel> accountsList ) {
+        this.accountsListIterator = accountsList;
     }
 
     /**

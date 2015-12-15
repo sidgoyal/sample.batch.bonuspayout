@@ -16,6 +16,8 @@
  */
 package com.ibm.websphere.samples.batch.beans;
 
+import com.ibm.websphere.samples.batch.cloudant.AccountModel;
+
 public class AccountDataObject {
 
     private int accountNumber;
@@ -33,6 +35,15 @@ public class AccountDataObject {
         this.accountNumber = accountNumber;
         this.balance = balance;
         this.accountCode = accountCode;
+    }
+    
+    /**
+     * @param accountModle
+     */
+    public AccountDataObject(AccountModel accountModel) {
+        this.accountNumber = accountModel.getAccountNumber();
+        this.balance = accountModel.getBalance();
+        this.accountCode = accountModel.getAccountCode();
     }
 
     /**
@@ -90,5 +101,11 @@ public class AccountDataObject {
     public void setCompareToDataObject(AccountDataObject compareToDataObject) {
         this.compareToDataObject = compareToDataObject;
     }
+
+	@Override
+	public String toString() {
+		return "AccountDataObject [accountNumber=" + accountNumber + ", balance=" + balance + ", accountCode="
+				+ accountCode + ", compareToDataObject=" + compareToDataObject + "]";
+	}
 
 }

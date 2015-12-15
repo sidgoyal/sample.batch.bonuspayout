@@ -19,8 +19,8 @@ package com.ibm.websphere.samples.batch.artifacts;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.Serializable;
-import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Iterator;
 import java.util.logging.Logger;
 
 import javax.batch.api.BatchProperty;
@@ -30,8 +30,9 @@ import javax.batch.runtime.context.StepContext;
 import javax.inject.Inject;
 
 import com.ibm.websphere.samples.batch.beans.AccountDataObject;
-import com.ibm.websphere.samples.batch.util.BonusPayoutUtils;
+import com.ibm.websphere.samples.batch.cloudant.AccountModel;
 import com.ibm.websphere.samples.batch.util.BonusPayoutConstants;
+import com.ibm.websphere.samples.batch.util.BonusPayoutUtils;
 import com.ibm.websphere.samples.batch.util.TransientDataHolder;
 
 /*
@@ -130,6 +131,8 @@ public class ValidationReader implements ItemReader, BonusPayoutConstants {
 
         AccountDataObject fileDO = readFromFile();
         AccountDataObject tableDO = readFromDB();
+        
+        logger.finer("tableDO read from the DB in ValidationReader : " + tableDO);
 
         if (fileDO == null && tableDO != null) {
             String errorMsg = "App failure.  Read record # " + (recordsAlreadyRead + 1) + "from DB table, but only read " + recordsAlreadyRead + " records from file.";
@@ -165,13 +168,10 @@ public class ValidationReader implements ItemReader, BonusPayoutConstants {
     }
 
     protected AccountDataObject readFromDB() throws SQLException {
-        ResultSet rs = getCurrentResultSet();
+        Iterator<AccountModel> accountsList  = getCurrentAccountsList();
 
-        if (rs.next()) {
-            int acctNum = rs.getInt(1);
-            int balance = rs.getInt(2);
-            String acctCode = rs.getString(3);
-            return new AccountDataObject(acctNum, balance, acctCode);
+        if (accountsList.hasNext()) {
+        	return new AccountDataObject( (AccountModel) accountsList.next());
         } else {
             logger.fine("End of JDBC input reached in " + this.getClass());
             return null;
@@ -197,9 +197,9 @@ public class ValidationReader implements ItemReader, BonusPayoutConstants {
         return recordsAlreadyRead;
     }
 
-    protected ResultSet getCurrentResultSet() {
+    protected Iterator<AccountModel> getCurrentAccountsList() {
         TransientDataHolder data = (TransientDataHolder) getStepContext().getTransientUserData();
-        return data.getResultSet();
+        return data.getAccountsListIterator();
     }
 
     /*
