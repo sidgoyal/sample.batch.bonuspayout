@@ -129,6 +129,17 @@ public class BonusPayoutUtils implements BonusPayoutConstants {
             throw new IllegalArgumentException(errorMsg);
         }
     }
+    
+	public static String getSelectorJson(long instanceId, int recordNumber, int chunkSize){
+		return  "  \"selector\": {\n" + 
+				"    \"instanceId\" : " + instanceId + ",\n" + 
+				"    \"accountNumber\": {\n" + 
+				"      \"$gte\": " + (recordNumber)+",\n" + 
+				"      \"$lt\": " + (recordNumber + chunkSize) +"\n" + 
+				"    }\n" + 
+				"  }";
+	}
+
 
     public static String getAccountQuery(String tableName) {
 

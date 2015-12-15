@@ -1,269 +1,377 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
-    <modelVersion>4.0.0</modelVersion>
+	<modelVersion>4.0.0</modelVersion>
 
-    <parent>
-        <groupId>net.wasdev.wlp.sample</groupId>
-        <artifactId>batch-bonuspayout</artifactId>
-        <version>1.0-SNAPSHOT</version>
-    </parent>
+	<parent>
+		<groupId>net.wasdev.wlp.sample</groupId>
+		<artifactId>batch-bonuspayout</artifactId>
+		<version>1.0-SNAPSHOT</version>
+	</parent>
 
-    <artifactId>batch-bonuspayout-application</artifactId>
-    <packaging>war</packaging>
-    <name>WAS Liberty Sample - Batch BonusPayout Sample Application</name>
-    <url>https://wasdev.github.io</url>
+	<artifactId>batch-bonuspayout-application</artifactId>
+	<packaging>war</packaging>
+	<name>WAS Liberty Sample - Batch BonusPayout Sample Application</name>
+	<url>https://wasdev.github.io</url>
 
-    <licenses>
-        <license>
-            <name>The Apache Software License, Version 2.0</name>
-            <url>https://raw.github.com/WASdev/sample.batch.bonuspayout/master/LICENSE</url>
-            <distribution>repo</distribution>
-        </license>
-    </licenses>
+	<licenses>
+		<license>
+			<name>The Apache Software License, Version 2.0</name>
+			<url>https://raw.github.com/WASdev/sample.batch.bonuspayout/master/LICENSE</url>
+			<distribution>repo</distribution>
+		</license>
+	</licenses>
 
-    <scm>
-        <connection>scm:git:git@github.com:WASdev/sample.batch.bonuspayout.git</connection>
-        <developerConnection>scm:git@github.com:WASdev/sample.batch.bonuspayout.git</developerConnection>
-        <url>git@github.com:WASdev/sample.batch.bonuspayout.git</url>
-    </scm>
+	<scm>
+		<connection>scm:git:git@github.com:WASdev/sample.batch.bonuspayout.git</connection>
+		<developerConnection>scm:git@github.com:WASdev/sample.batch.bonuspayout.git</developerConnection>
+		<url>git@github.com:WASdev/sample.batch.bonuspayout.git</url>
+	</scm>
 
-    <pluginRepositories>
-        <!-- Configure Sonatype OSS Maven snapshots repository -->
-        <pluginRepository>
-            <id>sonatype-nexus-snapshots</id>
-            <name>Sonatype Nexus Snapshots</name>
-            <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
-            <snapshots>
-                <enabled>true</enabled>
-            </snapshots>
-            <releases>
-                <enabled>false</enabled>
-            </releases>
-        </pluginRepository>
-    </pluginRepositories>
+	<pluginRepositories>
+		<!-- Configure Sonatype OSS Maven snapshots repository -->
+		<pluginRepository>
+			<id>sonatype-nexus-snapshots</id>
+			<name>Sonatype Nexus Snapshots</name>
+			<url>https://oss.sonatype.org/content/repositories/snapshots/</url>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+			<releases>
+				<enabled>false</enabled>
+			</releases>
+		</pluginRepository>
+	</pluginRepositories>
 
-    <repositories>
-        <repository>
-            <id>ibm-maven-repo</id>
-            <name>ibm-maven-repo</name>
-            <url>https://public.dhe.ibm.com/ibmdl/export/pub/software/websphere/wasdev/maven/repository/</url>
-        </repository>
-    </repositories>
+	<repositories>
+		<repository>
+			<id>ibm-maven-repo</id>
+			<name>ibm-maven-repo</name>
+			<url>https://public.dhe.ibm.com/ibmdl/export/pub/software/websphere/wasdev/maven/repository/</url>
+		</repository>
+	</repositories>
 
-    <properties>
+	<properties>
 
-        <!-- EDIT ME (or override on command line) -->
-        <serverHost>localhost</serverHost>
-        <httpsPort>9443</httpsPort>
+		<!-- EDIT ME (or override on command line) -->
+		<serverHost>localhost</serverHost>
+		<httpsPort>9443</httpsPort>
+		
+		<!-- DON'T EDIT after this point -->
 
-        <!-- DON'T EDIT after this point -->
+		<!-- liberty plugin default, passed to integration test -->
+		<wlpInstallDir>${project.build.directory}/liberty/wlp</wlpInstallDir>
 
-        <!-- liberty plugin default, passed to integration test -->
-        <wlpInstallDir>${project.build.directory}/liberty/wlp</wlpInstallDir>  
+		<warName>batch-bonuspayout-application</warName>
+		<warPath>${project.build.directory}/${warName}-${project.version}.war</warPath>
+		<wlp.user.dir>${project.basedir}/../batch-bonuspayout-wlpcfg</wlp.user.dir>
+		<server.config.dir>${wlp.user.dir}/servers/BonusPayout</server.config.dir>
+		<!-- Though this property can be set across all projects from the invoker 
+			(command line), it is convenient to define the default separately to avoid 
+			Derby path issues esp. on Windows -->
+		<db.url>${shared.resource.dir}/BatchDB</db.url>
+	</properties>
 
-        <warName>batch-bonuspayout-application</warName>
-        <warPath>${project.build.directory}/${warName}-${project.version}.war</warPath>
-        <wlp.user.dir>${project.basedir}/../batch-bonuspayout-wlpcfg</wlp.user.dir>
-        <server.config.dir>${wlp.user.dir}/servers/BonusPayout</server.config.dir>
-        <!-- Though this property can be set across all projects from the invoker (command line),
-             it is convenient to define the default separately to avoid Derby path issues esp. on Windows -->
-        <db.url>${shared.resource.dir}/BatchDB</db.url>
-    </properties>
+	<dependencies>
+		<!-- Just add one dependency on all EE 7 APIs -->
+		<dependency>
+			<groupId>javax</groupId>
+			<artifactId>javaee-api</artifactId>
+			<version>7.0</version>
+			<scope>provided</scope>
+		</dependency>
 
-    <dependencies>
-        <!-- Just add one dependency on all EE 7 APIs -->
-        <dependency>
-            <groupId>javax</groupId>
-            <artifactId>javaee-api</artifactId>
-            <version>7.0</version>
-            <scope>provided</scope>
-        </dependency>
+		<dependency>
+			<groupId>com.cloudant</groupId>
+			<artifactId>cloudant-client</artifactId>
+			<version>2.0.0</version>
+		</dependency>
+		<dependency>
+			<groupId>commons-configuration</groupId>
+			<artifactId>commons-configuration</artifactId>
+			<version>1.10</version>
+		</dependency>
 
-        <dependency>
-            <groupId>net.sf.expectit</groupId>
-            <artifactId>expectit-core</artifactId>
-            <version>0.8.0</version>
-            <scope>test</scope>
-        </dependency>
+		<dependency>
+			<groupId>net.sf.expectit</groupId>
+			<artifactId>expectit-core</artifactId>
+			<version>0.8.0</version>
+			<scope>test</scope>
+		</dependency>
 
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>4.10</version>
-        </dependency>
-    </dependencies>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.10</version>
+		</dependency>
+	</dependencies>
 
-    <build>
-        <plugins>
-            <plugin>
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-war-plugin</artifactId>
+				<version>2.6</version>
+				<configuration>
+					<failOnMissingWebXml>false</failOnMissingWebXml>
+				</configuration>
+			</plugin>
+			<!-- Nothing to run in test phase -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<version>2.19</version>
+				<executions>
+					<execution>
+						<id>default-test</id>
+						<configuration>
+							<skip>false</skip>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>net.wasdev.wlp.maven.plugins</groupId>
+				<artifactId>liberty-maven-plugin</artifactId>
+				<version>1.2-SNAPSHOT</version>
+				<executions>
+					<execution>
+						<id>install-server</id>
+						<phase>pre-integration-test</phase>
+						<goals>
+							<goal>install-server</goal>
+						</goals>
+					</execution>
+					<execution>
+						<id>install-features</id>
+						<phase>pre-integration-test</phase>
+						<goals>
+							<goal>install-feature</goal>
+						</goals>
+						<configuration>
+							<!-- No need to specify any here. Leverage the ability to install 
+								needed features from the server.xml -->
+							<features>
+								<acceptLicense>true</acceptLicense>
+							</features>
+						</configuration>
+					</execution>
+					<execution>
+						<id>start-server</id>
+						<phase>integration-test</phase>
+						<goals>
+							<goal>start-server</goal>
+						</goals>
+						<configuration>
+							<skip>${skipTests}</skip>
+							<applications>${warName}</applications>
+						</configuration>
+					</execution>
+					<execution>
+						<id>stop-server</id>
+						<phase>post-integration-test</phase>
+						<goals>
+							<goal>stop-server</goal>
+						</goals>
+						<configuration>
+							<skip>${skipTests}</skip>
+						</configuration>
+					</execution>
+				</executions>
+				<configuration>
+					<!-- Use skipTests as a signal to skip all the WAS server stuff -->
+					<skip>${skipTests}</skip>
+					<assemblyArtifact>
+						<groupId>com.ibm.websphere.appserver.runtime</groupId>
+						<artifactId>wlp-webProfile7</artifactId>
+						<version>8.5.5.8</version>
+						<type>zip</type>
+					</assemblyArtifact>
+					<installDirectory>${wlp.install.dir}</installDirectory>
+					<userDirectory>${wlp.user.dir}</userDirectory>
+					<configFiles>${server.config.dir}/server.xml</configFiles>
+					<serverName>BonusPayout</serverName>
+					<bootstrapProperties>
+						<!-- propagate existing prop -->
+						<db.url>${db.url}</db.url>
+					</bootstrapProperties>
+				</configuration>
+			</plugin>
+
+			<!-- Run integration tests against the app in the server -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-failsafe-plugin</artifactId>
+				<version>2.18.1</version>
+				<executions>
+					<execution>
+						<phase>integration-test</phase>
+						<id>integration-test</id>
+						<goals>
+							<goal>integration-test</goal>
+						</goals>
+					</execution>
+					<execution>
+						<id>verify-tests</id>
+						<goals>
+							<goal>verify</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<systemPropertyVariables>
+						<wlp.install.dir>${wlpInstallDir}</wlp.install.dir>
+						<wlp.user.dir>${wlp.user.dir}</wlp.user.dir>
+						<httpsPort>${httpsPort}</httpsPort>
+						<serverHost>${serverHost}</serverHost>
+						<!-- These batch tests require the app name so batchManager knows which 
+							application hosts the job -->
+						<warName>${warName}</warName>
+					</systemPropertyVariables>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-antrun-plugin</artifactId>
+				<version>1.7</version>
+				<executions>
+					<execution>
+						<id>install-app</id>
+						<phase>pre-integration-test</phase>
+						<configuration>
+							<skip>${skipTests}</skip>
+							<target>
+								<ant dir="${project.basedir}" antfile="install.if.not.published.by.wdt.xml"
+									target="installApp" />
+							</target>
+						</configuration>
+						<goals>
+							<goal>run</goal>
+						</goals>
+					</execution>
+					<execution>
+						<id>uninstall-app</id>
+						<phase>post-integration-test</phase>
+						<configuration>
+							<skip>${skipTests}</skip>
+							<target>
+								<ant dir="${project.basedir}" antfile="install.if.not.published.by.wdt.xml"
+									target="unInstallApp" />
+							</target>
+						</configuration>
+						<goals>
+							<goal>run</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<!--  The order of this plugin is important here because in deploy phase, 
+				  we first need to copy the war file and then build the docker image -->
+			<plugin>
                 <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-war-plugin</artifactId>
+                <artifactId>maven-dependency-plugin</artifactId>
                 <version>2.6</version>
-                <configuration>
-                    <failOnMissingWebXml>false</failOnMissingWebXml>
-                </configuration>
-            </plugin>
-            <!-- Nothing to run in test phase -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-surefire-plugin</artifactId>
-                <version>2.19</version>
                 <executions>
                     <execution>
-                        <id>default-test</id>
+                        <id>copy-process-resources</id>
+                        <phase>deploy</phase>
+                        <goals>
+                            <goal>copy</goal>
+                        </goals>
                         <configuration>
-                            <skip>true</skip>
+                            <artifactItems>
+                                <artifactItem>
+                                    <groupId>${project.groupId}</groupId>
+                                    <artifactId>${project.artifactId}</artifactId>
+                                    <version>${project.version}</version>
+                                    <type>war</type>
+                                    <overWrite>true</overWrite>
+                                    <outputDirectory>${project.build.directory}/docker</outputDirectory>
+                                    <destFileName>BonusPayout.war</destFileName>
+                                </artifactItem>
+                            </artifactItems>
                         </configuration>
                     </execution>
                 </executions>
             </plugin>
-            <plugin>
-                <groupId>net.wasdev.wlp.maven.plugins</groupId>
-                <artifactId>liberty-maven-plugin</artifactId>
-                <version>1.2-SNAPSHOT</version>
-                <executions>
-                    <execution>
-                        <id>install-server</id>
-                        <phase>pre-integration-test</phase>
-                        <goals>
-                            <goal>install-server</goal>
-                        </goals>
-                    </execution>
-                    <execution>
-                        <id>install-features</id>
-                        <phase>pre-integration-test</phase>
-                        <goals>
-                            <goal>install-feature</goal>
-                        </goals>
-                        <configuration>
-                            <!-- No need to specify any here. Leverage the ability to install needed features from the server.xml -->
-                            <features>
-                                <acceptLicense>true</acceptLicense>
-                            </features>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <id>start-server</id>
-                        <phase>integration-test</phase>
-                        <goals>
-                            <goal>start-server</goal>
-                        </goals>
-                        <configuration>
-                            <skip>${skipTests}</skip>
-                            <applications>${warName}</applications>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <id>stop-server</id>
-                        <phase>post-integration-test</phase>
-                        <goals>
-                            <goal>stop-server</goal>
-                        </goals>
-                        <configuration>
-                            <skip>${skipTests}</skip>
-                        </configuration>
-                    </execution>
-                </executions>
-                <configuration>
-                    <!-- Use skipTests as a signal to skip all the WAS server stuff -->
-                    <skip>${skipTests}</skip>
-                    <assemblyArtifact>
-                        <groupId>com.ibm.websphere.appserver.runtime</groupId>
-                        <artifactId>wlp-webProfile7</artifactId>
-                        <version>8.5.5.8</version>
-                        <type>zip</type>
-                    </assemblyArtifact>
-                    <installDirectory>${wlp.install.dir}</installDirectory>
-                    <userDirectory>${wlp.user.dir}</userDirectory>
-                    <configFiles>${server.config.dir}/server.xml</configFiles>
-                    <serverName>BonusPayout</serverName>
-                     <bootstrapProperties>
-                         <!-- propagate existing prop -->
-                         <db.url>${db.url}</db.url>
-                     </bootstrapProperties>
-                </configuration>
-            </plugin>
+			<plugin>
+				<groupId>com.spotify</groupId>
+				<artifactId>docker-maven-plugin</artifactId>
+				<version>0.4.0</version>
+				<configuration>
+					<imageName>sidgoyal/bonuspayout-app</imageName>
+					<dockerDirectory>${basedir}/docker</dockerDirectory>
+					<resources>
+						<resource>
+							<targetPath>/</targetPath>
+							<directory>${server.config.dir}</directory>
+							<include>server.xml</include>
+							<include>server.versioned.xml</include>
+                                                        <include>bootstrap.properties</include>
 
-            <!-- Run integration tests against the app in the server -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-failsafe-plugin</artifactId>
-                <version>2.18.1</version>
-                <executions>
-                    <execution>
-                        <phase>integration-test</phase>
-                        <id>integration-test</id>
-                        <goals>
-                            <goal>integration-test</goal>
-                        </goals>
-                    </execution>
-                    <execution>
-                        <id>verify-tests</id>
-                        <goals>
-                            <goal>verify</goal>
-                        </goals>
-                    </execution>
-                </executions>
-                <configuration>
-                    <systemPropertyVariables>
-                        <wlp.install.dir>${wlpInstallDir}</wlp.install.dir>
-                        <wlp.user.dir>${wlp.user.dir}</wlp.user.dir>
-                        <httpsPort>${httpsPort}</httpsPort>
-                        <serverHost>${serverHost}</serverHost>
-                        <!-- These batch tests require the app name so batchManager knows which 
-                            application hosts the job -->
-                        <warName>${warName}</warName>
-                    </systemPropertyVariables>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-antrun-plugin</artifactId>
-                <version>1.7</version>
-                <executions>
-                    <execution>
-                        <id>install-app</id>
-                        <phase>pre-integration-test</phase>
-                        <configuration>
-                            <skip>${skipTests}</skip>
-                            <target>
-                                <ant dir="${project.basedir}" antfile="install.if.not.published.by.wdt.xml" target="installApp"/>
-                            </target>
-                        </configuration>
-                        <goals>
-                            <goal>run</goal>
-                        </goals>
-                    </execution>
-                    <execution>
-                        <id>uninstall-app</id>
-                        <phase>post-integration-test</phase>
-                        <configuration>
-                            <skip>${skipTests}</skip>
-                            <target>
-                                <ant dir="${project.basedir}" antfile="install.if.not.published.by.wdt.xml" target="unInstallApp"/>
-                            </target>
-                        </configuration>
-                        <goals>
-                            <goal>run</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-        </plugins>
-    </build>
+						</resource>
+					</resources>
+					<imageTags>
+						<imageTag>${project.version}</imageTag>
+						<!--imageTag>latest</imageTag -->
+					</imageTags>
+					<serverId>docker-hub</serverId>
+					<pushImage>true</pushImage>
+				</configuration>
+				<executions>
+					<execution>
+						<id>docker-remove-old-images</id>
+						<phase>deploy</phase>
+						<goals>
+							<goal>removeImage</goal>
+						</goals>
+						<configuration>
+							<imageTags>
+								<imageTag>${project.version}</imageTag>
+								<imageTag>latest</imageTag>
+							</imageTags>
+						</configuration>
+					</execution>
+					<execution>
+						<id>docker-build-runtime-image</id>
+						<phase>deploy</phase>
+						<goals>
+							<goal>build</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-deploy-plugin</artifactId>
+				<configuration>
+					<skip>true</skip>
+				</configuration>
+			</plugin>
 
-    <profiles>
-        <profile>
-            <id>use-existing-liberty-if-present</id>
-            <activation>
-                <activeByDefault>false</activeByDefault>
-                <property><name>wlp.install.dir</name></property>
-            </activation>
-            <properties>
-                <wlpInstallDir>${wlp.install.dir}</wlpInstallDir>
-            </properties>
-        </profile>
-    </profiles>
+		</plugins>
+	</build>
+
+	<profiles>
+		<profile>
+			<id>use-existing-liberty-if-present</id>
+			<activation>
+				<activeByDefault>false</activeByDefault>
+				<property>
+					<name>wlp.install.dir</name>
+				</property>
+			</activation>
+			<properties>
+				<wlpInstallDir>${wlp.install.dir}</wlpInstallDir>
+			</properties>
+		</profile>
+		<profile>
+			<id>dev</id>
+			<properties>
+				<environment>dev</environment>
+			</properties>
+		</profile>
+	</profiles>
 </project>
+
