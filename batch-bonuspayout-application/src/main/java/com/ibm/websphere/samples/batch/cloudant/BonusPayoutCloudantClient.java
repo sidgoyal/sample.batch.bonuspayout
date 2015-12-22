@@ -53,7 +53,6 @@ public class BonusPayoutCloudantClient {
 			Configuration config = null;
 			try {
 				config = new PropertiesConfiguration("config.properties");
-				config.setProperty("bc", "sutta");
 			} catch (ConfigurationException e) {
 				logger.log(Level.FINE,"Cannot read db configuration from database : ",e);
 				throw new RuntimeException("Cannot read db configuration from config file" );

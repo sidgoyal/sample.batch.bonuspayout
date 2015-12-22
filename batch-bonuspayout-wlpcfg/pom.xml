@@ -116,7 +116,7 @@
                     <url>jdbc:derby:${db.url};create=true</url>
                 </configuration>
                 <executions>
-                    <execution>
+                 <execution>
                         <id>drop-db-before-test-if-any</id>
                         <phase>process-test-resources</phase>
                         <goals>
@@ -128,8 +128,8 @@
                             <onError>continue</onError>
                             <skip>${skipDropDB}</skip>
                         </configuration>
-                    </execution>
-                    <execution>
+                  </execution>
+               <!--   <execution>
                         <id>create-db</id>
                         <phase>process-test-resources</phase>
                         <goals>
@@ -142,7 +142,7 @@
                             </srcFiles>
                             <skip>${skipCreateDB}</skip>
                         </configuration>
-                    </execution>
+                    </execution> --> 
                 </executions>
             </plugin>
             <!--

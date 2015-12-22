@@ -17,15 +17,16 @@ import com.ibm.websphere.samples.batch.test.util.AccountGenerator;
 
 public class BonusPayoutCloudantClientTest {
 	
-	private static Logger logger = Logger.getLogger(BonusPayoutCloudantClientTest.class.getName());
+	public static Logger logger = Logger.getLogger(BonusPayoutCloudantClientTest.class.getName());
 	
-	private static BonusPayoutCloudantClient client  = new BonusPayoutCloudantClient("cloudant-bonuspayout");
+	public static BonusPayoutCloudantClient client ;
 	
 
 	
 	@BeforeClass
 	public static void setup(){
-	client.cleanDB();
+		client = new BonusPayoutCloudantClient("cloudant-bonuspayout");
+		client.cleanDB();
 	}
 	
 	@AfterClass
