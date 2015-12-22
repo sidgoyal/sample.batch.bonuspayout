@@ -118,7 +118,7 @@
                     <url>jdbc:derby:${db.url};create=true</url>
                 </configuration>
                 <executions>
-                    <execution>
+                 <execution>
                         <id>drop-db-before-test-if-any</id>
                         <phase>process-test-resources</phase>
                         <goals>
@@ -130,8 +130,8 @@
                             <onError>continue</onError>
                             <skip>${reuseDB}</skip>
                         </configuration>
-                    </execution>
-                    <execution>
+                  </execution>
+               <!--   <execution>
                         <id>create-db</id>
                         <phase>process-test-resources</phase>
                         <goals>
@@ -144,7 +144,15 @@
                             </srcFiles>
                             <skip>${reuseDB}</skip>
                         </configuration>
-                    </execution>
+                    </execution> --> 
+                </executions>
+            </plugin>
+            <!--
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <version>2.10</version>
+                <executions>
                     <execution>
                         <id>shutdown-database-so-that-test-can-run</id>
                         <phase>process-test-resources</phase>
