@@ -1,6 +1,7 @@
 package com.ibm.websphere.samples.batch.cloudant;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.logging.Level;
@@ -132,6 +133,33 @@ public class BonusPayoutCloudantClient {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		};
+	}
+	
+	public  List getInstanceIds(){
+		List<String> instanceIds = new ArrayList<String>(); 
+		try {
+			for(Entry<String, String> entry : db.getAllDocsRequestBuilder().build().getResponse().getIdsAndRevs().entrySet()){
+				instanceIds.add(entry.getKey().split("-")[0]);
+			}
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return instanceIds;
+	}
+	
+
+	public  List getAccountsForInstanceId(){
+		List<String> instanceIds = new ArrayList<String>(); 
+		try {
+			for(Entry<String, String> entry : db.getAllDocsRequestBuilder().build().getResponse().getIdsAndRevs().entrySet()){
+				instanceIds.add(entry.getKey().split("-")[0]);
+			}
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return instanceIds;
 	}
 
 }
