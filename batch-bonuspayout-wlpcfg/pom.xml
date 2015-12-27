@@ -174,12 +174,13 @@
       <version>0.3.8</version>
       <configuration>
         <imageName>bonuspayout-runtime</imageName>
-        <dockerDirectory>bonuspayout-runtime</dockerDirectory>
+        <dockerDirectory>${basedir}/bonuspayout-runtime</dockerDirectory>
         <resources>
            <resource>
              <targetPath>/</targetPath>
-             <directory>${project.build.directory}</directory>
-             <include>${project.build.finalName}.jar</include>
+             <directory>${basedir}/shared/</directory>
+             <include>${shared.resource.dir}/derby</include>
+             <include>${shared.resource.dir}/BatchDB</include>
            </resource>
         </resources>
       </configuration>
