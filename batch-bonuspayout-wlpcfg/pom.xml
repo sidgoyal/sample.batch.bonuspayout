@@ -19,9 +19,11 @@
 
     <properties>
         <fs>${file.separator}</fs>
-        <shared.resource.dir>${basedir}${fs}shared${fs}resources</shared.resource.dir>
-        <ddl.dir>${shared.resource.dir}${fs}ddls</ddl.dir>
-        <db.url>${shared.resource.dir}${fs}BatchDB</db.url>
+        <shared.resource.directory>${basedir}${fs}shared${fs}resources</shared.resource.directory>
+        <ddl.dir>${shared.resource.directory}${fs}ddls</ddl.dir>
+        <!-- Though this property can be set across all projects from the invoker (command line),
+             it is convenient to define the default separately to avoid Derby path issues esp. on Windows -->
+        <db.url>${shared.resource.directory}${fs}BatchDB</db.url>
     </properties>
 
     <build>
@@ -39,9 +41,10 @@
                             <directory>servers</directory>
                             <followSymlinks>false</followSymlinks>
                             <includes>
-                                <include>**/logs/*</include>
-                                <include>**/dropins/*</include>
-                                <include>**/workarea/*</include>
+                                <include>**/logs/**</include>
+                                <include>**/apps/**</include>
+                                <include>**/dropins/**</include>
+                                <include>**/workarea/**</include>
                             </includes>
                         </fileset>
                     </filesets>
@@ -49,31 +52,30 @@
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <version>1.1</version>
+                <executions>
+                    <execution>
+                        <phase>validate</phase>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                        <configuration>
+                            <tasks>
+                                <echo>********</echo>
+                                <echo>******** Database location will be at URL: </echo>
+                                <echo>******** ${db.url}</echo>
+                                <echo>********</echo>
+                            </tasks>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-dependency-plugin</artifactId>
                 <version>2.6</version>
                 <executions>
-                    <execution>
-                        <id>copy-package</id>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>copy</goal>
-                        </goals>
-                        <configuration>
-                            <outputDirectory>servers/BonusPayout/apps</outputDirectory>
-                            <silent>true</silent>
-                            <stripVersion>true</stripVersion>
-                            <artifactItems>
-                                <artifactItem>
-                                    <groupId>net.wasdev.wlp.sample</groupId>
-                                    <artifactId>batch-bonuspayout-application</artifactId>
-                                    <version>1.0-SNAPSHOT</version>
-                                    <type>war</type>
-                                    <!-- Use "legacy" name to preserve continuity with earlier doc and command history -->
-                                    <destFileName>BonusPayout-1.0.war</destFileName>
-                                </artifactItem>
-                            </artifactItems>
-                        </configuration>
-                    </execution>
                     <execution>
                         <id>copy-process-resources</id>
                         <phase>process-resources</phase>
@@ -88,7 +90,7 @@
                                     <version>10.10.1.1</version>
                                     <type>jar</type>
                                     <overWrite>false</overWrite>
-                                    <outputDirectory>${shared.resource.dir}/derby</outputDirectory>
+                                    <outputDirectory>${shared.resource.directory}/derby</outputDirectory>
                                     <destFileName>derby.jar</destFileName>
                                 </artifactItem>
                             </artifactItems>
@@ -126,7 +128,7 @@
                             <autocommit>true</autocommit>
                             <sqlCommand>drop table BONUSPAYOUT.ACCOUNT</sqlCommand>
                             <onError>continue</onError>
-                            <skip>${skipDropDB}</skip>
+                            <skip>${reuseDB}</skip>
                         </configuration>
                   </execution>
                <!--   <execution>
@@ -140,8 +142,9 @@
                             <srcFiles>
                                 <srcFile>${ddl.dir}${fs}BonusPayout.derby.ddl</srcFile>
                             </srcFiles>
-                            <skip>${skipCreateDB}</skip>
+                            <skip>${reuseDB}</skip>
                         </configuration>
+<<<<<<< HEAD
                     </execution> --> 
                 </executions>
             </plugin>
@@ -151,28 +154,23 @@
                 <artifactId>maven-dependency-plugin</artifactId>
                 <version>2.10</version>
                 <executions>
+=======
+                    </execution>
+>>>>>>> master
                     <execution>
-                        <id>copy</id>
-                        <phase>process-resources</phase>
+                        <id>shutdown-database-so-that-test-can-run</id>
+                        <phase>process-test-resources</phase>
                         <goals>
-                            <goal>copy</goal>
+                            <goal>execute</goal>
                         </goals>
                         <configuration>
-                            <artifactItems>
-                                <artifactItem>
-                                    <groupId>org.apache.derby</groupId>
-                                    <artifactId>derby</artifactId>
-                                    <version>10.10.1.1</version>
-                                    <type>jar</type>
-                                    <overWrite>false</overWrite>
-                                    <outputDirectory>${shared.resource.dir}/derby</outputDirectory>
-                                    <destFileName>derby.jar</destFileName>
-                                </artifactItem>
-                            </artifactItems>
+                            <url>jdbc:derby:${db.url};shutdown=true</url>
+                            <skipOnConnectionError>true</skipOnConnectionError>
                         </configuration>
                     </execution>
                 </executions>
             </plugin>
+<<<<<<< HEAD
 -->
 
  <plugin>
@@ -192,6 +190,37 @@
         </resources>
       </configuration>
     </plugin>
+=======
+>>>>>>> master
         </plugins>
+        <pluginManagement>
+            <plugins>
+                <!--This plugin's configuration is used to store Eclipse m2e settings only. It has no influence on the Maven build itself.-->
+                <plugin>
+                    <groupId>org.eclipse.m2e</groupId>
+                    <artifactId>lifecycle-mapping</artifactId>
+                    <version>1.0.0</version>
+                    <configuration>
+                        <lifecycleMappingMetadata>
+                            <pluginExecutions>
+                                <pluginExecution>
+                                    <pluginExecutionFilter>
+                                        <groupId>org.codehaus.mojo</groupId>
+                                        <artifactId>sql-maven-plugin</artifactId>
+                                        <versionRange>[1.5,)</versionRange>
+                                        <goals>
+                                            <goal>execute</goal>
+                                        </goals>
+                                    </pluginExecutionFilter>
+                                    <action>
+                                        <ignore/>
+                                    </action>
+                                </pluginExecution>
+                            </pluginExecutions>
+                        </lifecycleMappingMetadata>
+                    </configuration>
+                </plugin>
+            </plugins>
+        </pluginManagement>
     </build>
 </project>
