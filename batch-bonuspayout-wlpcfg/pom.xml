@@ -178,11 +178,11 @@
         		<dockerDirectory>${basedir}/bonuspayout-runtime</dockerDirectory>
         		<resources>
            			<resource>
-             				<targetPath>${project.build.directory}/docker/derby</targetPath>
+             				<targetPath>derby</targetPath>
              				<directory>${shared.resource.directory}/derby</directory>
            			</resource>
 				<resource>
-               	                 	<targetPath>${project.build.directory}/docker/BatchDB</targetPath>
+               	                 	<targetPath>BatchDB</targetPath>
                                 	<directory>${shared.resource.directory}/BatchDB</directory>
 				</resource>
         		</resources>
