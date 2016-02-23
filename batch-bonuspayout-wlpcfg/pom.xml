@@ -118,7 +118,7 @@
                     <url>jdbc:derby:${db.url};create=true</url>
                 </configuration>
                 <executions>
-                 <execution>
+                    <execution>
                         <id>drop-db-before-test-if-any</id>
                         <phase>process-test-resources</phase>
                         <goals>
@@ -130,8 +130,8 @@
                             <onError>continue</onError>
                             <skip>${reuseDB}</skip>
                         </configuration>
-                  </execution>
-               <!--   <execution>
+                    </execution>
+                    <execution>
                         <id>create-db</id>
                         <phase>process-test-resources</phase>
                         <goals>
@@ -144,6 +144,7 @@
                             </srcFiles>
                             <skip>${reuseDB}</skip>
                         </configuration>
+<<<<<<< 63433e68b8bb242c1f42456b5e56f995b0e6ae3c
                     </execution> --> 
                 </executions>
             </plugin>
@@ -153,6 +154,9 @@
                 <artifactId>maven-dependency-plugin</artifactId>
                 <version>2.10</version>
                 <executions>
+=======
+                    </execution>
+>>>>>>> fixed pom for runtime image
                     <execution>
                         <id>shutdown-database-so-that-test-can-run</id>
                         <phase>process-test-resources</phase>
@@ -166,25 +170,24 @@
                     </execution>
                 </executions>
             </plugin>
--->
-
- <plugin>
-      <groupId>com.spotify</groupId>
-      <artifactId>docker-maven-plugin</artifactId>
-      <version>0.3.8</version>
-      <configuration>
-        <imageName>bonuspayout-runtime</imageName>
-        <dockerDirectory>${basedir}/bonuspayout-runtime</dockerDirectory>
-        <resources>
-           <resource>
-             <targetPath>/</targetPath>
-             <directory>${basedir}/shared/</directory>
-             <include>${shared.resource.dir}/derby</include>
-             <include>${shared.resource.dir}/BatchDB</include>
-           </resource>
-        </resources>
-      </configuration>
-    </plugin>
+	    <plugin>
+      		<groupId>com.spotify</groupId>
+      		<artifactId>docker-maven-plugin</artifactId>
+     		<version>0.4.0</version>
+      		<configuration>
+       		 	<imageName>bonuspayout-runtime</imageName>
+        		<dockerDirectory>${basedir}/bonuspayout-runtime</dockerDirectory>
+        		<resources>
+           			<resource>
+             				<targetPath>${project.build.directory}/docker/derby</targetPath>
+             				<directory>${shared.resource.directory}/derby</directory>
+           			</resource>
+				<resource>
+               	                 <targetPath>${project.build.directory}/docker/BatchDB</targetPath>
+                                <directory>${shared.resource.directory}/BatchDB</directory>
+        		</resources>
+     		</configuration>
+    	    </plugin>
         </plugins>
         <pluginManagement>
             <plugins>
