@@ -171,8 +171,9 @@
              				<directory>${shared.resource.directory}/derby</directory>
            			</resource>
 				<resource>
-               	                 <targetPath>${project.build.directory}/docker/BatchDB</targetPath>
-                                <directory>${shared.resource.directory}/BatchDB</directory>
+               	                 	<targetPath>${project.build.directory}/docker/BatchDB</targetPath>
+                                	<directory>${shared.resource.directory}/BatchDB</directory>
+				</resource>
         		</resources>
      		</configuration>
     	    </plugin>
