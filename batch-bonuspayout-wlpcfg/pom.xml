@@ -178,6 +178,11 @@
                                 	<directory>${shared.resource.directory}/BatchDB</directory>
 				</resource>
         		</resources>
+		  <imageTags>
+        	  	 <imageTag>${project.version}</imageTag>
+        	   	<imageTag>latest</imageTag>
+      		  </imageTags>
+
      		</configuration>
 
 		<executions>
