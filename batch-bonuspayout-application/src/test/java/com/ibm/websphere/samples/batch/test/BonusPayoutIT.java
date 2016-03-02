@@ -47,7 +47,7 @@ import net.sf.expectit.Result;
 public class BonusPayoutIT {
 
 	// How long we wait for matching command line output in these tests
-	private int COMMAND_LINE_WAIT_TIME_SECONDS = 25;
+	private int COMMAND_LINE_WAIT_TIME_SECONDS = 1000;
 	
 	private static enum SHELL_TYPE {UNIX, WINDOWS};
 	private static SHELL_TYPE shellType;

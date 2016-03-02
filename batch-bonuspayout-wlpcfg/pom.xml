@@ -46,6 +46,10 @@
                                 <include>**/workarea/**</include>
                             </includes>
                         </fileset>
+                        <fileset>
+                            <directory>${shared.resource.directory}/BatchDB</directory>
+                            <directory>${shared.resource.directory}/derby</directory>
+                        </fileset>
                     </filesets>
                 </configuration>
             </plugin>
@@ -175,7 +179,25 @@
 				</resource>
         		</resources>
      		</configuration>
+
+		<executions>
+                     <execution>
+                        <id>docker-build-runtime-image</id>
+                        <phase>deploy</phase>
+			<goals>
+			    <goal>build</goal>
+			</goals>
+                     </execution>
+		</executions>
     	    </plugin>
+<plugin>
+  <groupId>org.apache.maven.plugins</groupId>
+  <artifactId>maven-deploy-plugin</artifactId>
+  <configuration>
+    <skip>true</skip>
+  </configuration>
+</plugin>
+
         </plugins>
         <pluginManagement>
             <plugins>
