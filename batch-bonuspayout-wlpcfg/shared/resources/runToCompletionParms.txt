@@ -2,3 +2,6 @@
 # Job should complete successfully
 #
 generateFileNameRoot=logs/bonusPayoutGen
+
+chunkSize=20
+numRecords=100

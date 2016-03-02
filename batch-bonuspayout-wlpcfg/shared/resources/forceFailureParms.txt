@@ -2,4 +2,6 @@
 # Job execution will fail after 500 records are processed
 #
 generateFileNameRoot=logs/bonusPayoutGen
-forceFailure=500
+forceFailure=70
+numRecords=100
+chunkSize=20

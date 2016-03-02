@@ -31,10 +31,9 @@ public class BonusPayoutCloudantClientTest {
 	
 	@AfterClass
 	public static void breakDown(){
-		//TODO method to close all db resources
+		client.cleanDB();
 	}
 	
-//	@Ignore
 	@Test
 	public void testAddMultipleAccountNumberSameInstanceId(){
 		
@@ -63,7 +62,6 @@ public class BonusPayoutCloudantClientTest {
 		
 	}
 	
-//	@Ignore
 	@Test(expected = DocumentConflictException.class)
 	public void testAddDuplicateRecord() throws Exception{
 		AccountDataObject account = AccountGenerator.generateAccount();
@@ -96,7 +94,6 @@ public class BonusPayoutCloudantClientTest {
 		int i = 0;
 		while(true){
 			List<AccountModel> accounts = client.getAccountsList(instanceId, startingAccountNumber + i*3, 3);
-			System.out.println("[DEBUG] accounts = " + accounts);
 			i++;
 			assertEquals(3,accounts.size());
 			if(i == 2 ){
