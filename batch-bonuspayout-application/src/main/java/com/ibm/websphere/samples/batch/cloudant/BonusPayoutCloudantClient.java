@@ -48,8 +48,6 @@ public class BonusPayoutCloudantClient {
 	// synchronizing just for making it safer, although might not need to be locked
 	public synchronized void initializeClient(String databaseName){
 		if(!initialized){
-			//TODO
-			System.out.println("[DEBUG] instide initializer");
 			initialized = true;
 			Configuration config = null;
 			try {
@@ -71,12 +69,7 @@ public class BonusPayoutCloudantClient {
 	                .password(dbApiPassword)
 	                .build();
 			
-			System.out.println("[DEBUG] databaseName " + databaseName);
-			
 			 db = client.database(dbName, false);
-			
-			 
-			// 
 				 }
 			 
 			/*
