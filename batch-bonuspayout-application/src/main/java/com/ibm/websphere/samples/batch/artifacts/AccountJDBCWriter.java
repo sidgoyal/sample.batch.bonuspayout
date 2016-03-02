@@ -51,7 +51,6 @@ public class AccountJDBCWriter extends AbstractItemWriter implements ItemWriter,
 
     @Override
     public void open(Serializable checkpoint) throws Exception {
-    	System.out.println("[DEBUG] databaseName " + databaseName);
     	client  = new BonusPayoutCloudantClient(databaseName);
     }
 
