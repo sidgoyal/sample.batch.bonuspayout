@@ -183,15 +183,8 @@
 				</configuration>
 				<executions>
 					<execution>
-						<id>docker-build-runtime-image</id>
-						<phase>deploy</phase>
-						<goals>
-							<goal>build</goal>
-						</goals>
-					</execution>
-					<execution>
 						<id>docker-remove-old-images</id>
-						<phase>clean</phase>
+						<phase>deploy</phase>
 						<goals>
 							<goal>removeImage</goal>
 						</goals>
@@ -202,6 +195,14 @@
 							</imageTags>
 						</configuration>
 					</execution>
+					<execution>
+						<id>docker-build-runtime-image</id>
+						<phase>deploy</phase>
+						<goals>
+							<goal>build</goal>
+						</goals>
+					</execution>
+					
 				</executions>
 			</plugin>
 			<plugin>
