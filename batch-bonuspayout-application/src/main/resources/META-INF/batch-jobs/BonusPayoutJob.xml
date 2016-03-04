@@ -20,7 +20,11 @@
     xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/jobXML_1_0.xsd"
 	version="1.0">
 	<properties>
-		<property name="databaseName" value="#{jobParameters['databaseName']}?:cloudant-bonuspayout;" />
+		<property name="cloudant.username" value="#{jobParameters['cloudant.username']}?:${cloudant.username};" />
+		<property name="cloudant.database" value="#{jobParameters['cloudant.database']}?:${cloudant.database};" />
+		<property name="cloudant.apiKey" value="#{jobParameters['cloudant.apiKey']}?:${cloudant.apiKey};" />
+		<property name="cloudant.apiKey.password" value="#{jobParameters['cloudant.apiKey.password']}?:${cloudant.apiKey.password};" />
+		
 		<property name="numRecords" value="#{jobParameters['numRecords']}?:1000;" />
 		<property name="chunkSize" value="#{jobParameters['chunkSize']}?:100;" />
 		<property name="bonusAmount" value="#{jobParameters['bonusAmount']}?:100;" />
@@ -57,7 +61,10 @@
 			<writer
 				ref="com.ibm.websphere.samples.batch.artifacts.AccountJDBCWriter">
 				<properties>
-					<property name="databaseName" value="#{jobProperties['databaseName']}" />
+					<property name="cloudant.username" value="#{jobProperties['cloudant.username']}" />
+					<property name="cloudant.database" value="#{jobProperties['cloudant.database']}" />
+					<property name="cloudant.apiKey" value="#{jobProperties['cloudant.apiKey']}" />
+					<property name="cloudant.apiKey.password" value="#{jobProperties['cloudant.apiKey.password']}" />
 				</properties>
 			</writer>
 		</chunk>
@@ -70,7 +77,10 @@
 				ref="com.ibm.websphere.samples.batch.artifacts.ValidationDBReadChunkListener">
 				<properties>
 					<property name="chunkSize" value="#{jobProperties['chunkSize']}" />
-					<property name="databaseName" value="#{jobProperties['databaseName']}" />
+					<property name="cloudant.username" value="#{jobProperties['cloudant.username']}" />
+					<property name="cloudant.database" value="#{jobProperties['cloudant.database']}" />
+					<property name="cloudant.apiKey" value="#{jobProperties['cloudant.apiKey']}" />
+					<property name="cloudant.apiKey.password" value="#{jobProperties['cloudant.apiKey.password']}" />
 				</properties>
 			</listener>
 			<listener ref="com.ibm.websphere.samples.batch.artifacts.ForceFailureReadListener">

@@ -40,8 +40,20 @@ public class AccountJDBCWriter extends AbstractItemWriter implements ItemWriter,
     private final static Logger logger = Logger.getLogger(BONUS_PAYOUT_LOGGER);
 
     @Inject
-    @BatchProperty(name = "databaseName")
+    @BatchProperty(name = "cloudant.database")
     private String databaseName;
+    
+    @Inject
+    @BatchProperty(name = "cloudant.username")
+    private String username;
+    
+    @Inject
+    @BatchProperty(name = "cloudant.apiKey")
+    private String apiKey;
+    
+    @Inject
+    @BatchProperty(name = "cloudant.apiKey.password")
+    private String password;
 
     @Inject
     private JobContext jobCtx;
@@ -51,7 +63,8 @@ public class AccountJDBCWriter extends AbstractItemWriter implements ItemWriter,
 
     @Override
     public void open(Serializable checkpoint) throws Exception {
-    	client  = new BonusPayoutCloudantClient(databaseName);
+    	client  =  new BonusPayoutCloudantClient();
+    	client.initializeClient(username, databaseName, apiKey, password);
     }
 
     @Override

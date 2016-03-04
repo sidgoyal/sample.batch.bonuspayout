@@ -38,8 +38,21 @@ public class ValidationDBReadChunkListener implements ChunkListener, BonusPayout
     private Integer chunkSize;
 
     @Inject
-    @BatchProperty(name = "databaseName")
+    @BatchProperty(name = "cloudant.database")
     private String databaseName;
+    
+    @Inject
+    @BatchProperty(name = "cloudant.username")
+    private String username;
+    
+    @Inject
+    @BatchProperty(name = "cloudant.apiKey")
+    private String apiKey;
+    
+    @Inject
+    @BatchProperty(name = "cloudant.apiKey.password")
+    private String password;
+
 
     @Inject
     private JobContext jobCtx;
@@ -49,7 +62,7 @@ public class ValidationDBReadChunkListener implements ChunkListener, BonusPayout
     
 	private BonusPayoutCloudantClient client = new BonusPayoutCloudantClient() ;
 
-
+	private boolean initializedClient = false;
     
 
 
@@ -61,8 +74,11 @@ public class ValidationDBReadChunkListener implements ChunkListener, BonusPayout
     @Override
     public void beforeChunk() throws Exception {
     	
-    	client.initializeClient(databaseName);
-
+    	if(!initializedClient){
+    		initializedClient = true;
+    		client.initializeClient(username, databaseName, apiKey, password);
+    	}
+    	
         // We expect this to have been initialized by the ItemReader
         TransientDataHolder data = (TransientDataHolder) stepCtx.getTransientUserData();
 

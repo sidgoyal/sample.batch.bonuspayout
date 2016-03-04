@@ -4,12 +4,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map.Entry;
-import java.util.logging.Level;
 import java.util.logging.Logger;
-
-import org.apache.commons.configuration.Configuration;
-import org.apache.commons.configuration.ConfigurationException;
-import org.apache.commons.configuration.PropertiesConfiguration;
 
 import com.cloudant.client.api.ClientBuilder;
 import com.cloudant.client.api.CloudantClient;
@@ -22,7 +17,7 @@ import com.ibm.websphere.samples.batch.util.BonusPayoutConstants;
 import com.ibm.websphere.samples.batch.util.BonusPayoutUtils;
 
 
-public class BonusPayoutCloudantClient {
+public class BonusPayoutCloudantClient  {
 	
 	//private static Boolean cleanupDB = true;
 	
@@ -37,32 +32,12 @@ public class BonusPayoutCloudantClient {
     private CloudantClient client ;
     private Database db;
      
-    private boolean initialized = false;
-    
 	
-	
-	public BonusPayoutCloudantClient(){
-		
-	}
-	
-	// synchronizing just for making it safer, although might not need to be locked
-	public synchronized void initializeClient(String databaseName){
-		if(!initialized){
-			initialized = true;
-			Configuration config = null;
-			try {
-				config = new PropertiesConfiguration("config.properties");
-			} catch (ConfigurationException e) {
-				logger.log(Level.FINE,"Cannot read db configuration from database : ",e);
-				throw new RuntimeException("Cannot read db configuration from config file" );
-				
-			}
-			
+	public void initializeClient(String username, String databaseName, String apiKey, String password ){
 			this.dbName = databaseName;
-
-			this.dbUsername = config.getString("username");
-			this.dbApiKey = config.getString("apiKey");
-			this.dbApiPassword = config.getString("apiKeyPassword");
+			this.dbUsername = username;
+			this.dbApiKey = apiKey;
+			this.dbApiPassword = password;
 			
 			client = ClientBuilder.account(dbUsername)
 	                .username(dbApiKey)
@@ -70,25 +45,11 @@ public class BonusPayoutCloudantClient {
 	                .build();
 			
 			 db = client.database(dbName, false);
-				 }
 			 
-			/*
-			synchronized(cleanupDB){
-				if(cleanupDB == true){
-					//TODO code to delete all documents in the database
-				}
-			}
-			*/
-			
-			 
-		}
-	
-
-	public BonusPayoutCloudantClient(String databaseName){
-		initializeClient(databaseName);
+			 logger.fine("DB Details : " + this.toString());
 	}
+			 
 
-	
 	public void addAccount(AccountDataObject account, long instanceId){
 		db.save(new AccountModel(account, instanceId));
 		
@@ -103,7 +64,6 @@ public class BonusPayoutCloudantClient {
 						.fields("accountNumber")
 						.fields("accountCode")
 						.sort(new IndexField("accountNumber",SortOrder.asc)));
-		
 		logger.finer("accountsList read from the DB : " + accounts);
 		
 		return accounts;
@@ -115,9 +75,9 @@ public class BonusPayoutCloudantClient {
 		 db.getAllDocsRequestBuilder().build();
 		 try {
 			for( Entry<String, String>  map : db.getAllDocsRequestBuilder().build().getResponse().getIdsAndRevs().entrySet()){
-				 System.out.println("[DEBUG] map " +  map);
+				 logger.fine("map " +  map);
 				 if(map.getKey().contains("_design")){
-					 System.out.println("[DEBUG] skipping design docs");
+					 logger.fine("skipping design docs");
 					 continue;
 				 }
 				db.remove(map.getKey(), map.getValue());
@@ -153,6 +113,13 @@ public class BonusPayoutCloudantClient {
 			e.printStackTrace();
 		}
 		return instanceIds;
+	}
+
+
+	@Override
+	public String toString() {
+		return "BonusPayoutCloudantClient [dbUsername=" + dbUsername + ", dbApiKey=" + dbApiKey + ", dbApiPassword="
+				+ dbApiPassword + ", dbName=" + dbName + "]";
 	}
 
 }

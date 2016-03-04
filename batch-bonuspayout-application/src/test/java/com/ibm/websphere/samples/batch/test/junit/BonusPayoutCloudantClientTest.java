@@ -5,6 +5,8 @@ import static org.junit.Assert.assertEquals;
 import java.util.List;
 import java.util.logging.Logger;
 
+import org.apache.commons.configuration.Configuration;
+import org.apache.commons.configuration.PropertiesConfiguration;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -24,8 +26,17 @@ public class BonusPayoutCloudantClientTest {
 
 	
 	@BeforeClass
-	public static void setup(){
-		client = new BonusPayoutCloudantClient("cloudant-bonuspayout");
+	public static void setup() throws Exception{
+		Configuration config = null;
+		config = new PropertiesConfiguration("config.properties");
+
+		String database = config.getString("cloudant.database");
+		String username = config.getString("cloudant.username");
+		String apiKey = config.getString("cloudant.apiKey");
+		String password = config.getString("cloudant.apiKey.password");
+
+		client = new BonusPayoutCloudantClient();
+		client.initializeClient(username, database, apiKey, password);
 		client.cleanDB();
 	}
 	
@@ -38,13 +49,13 @@ public class BonusPayoutCloudantClientTest {
 	public void testAddMultipleAccountNumberSameInstanceId(){
 		
 		AccountDataObject account = AccountGenerator.generateAccount();
-		logger.info("Account Generated : " + account.toString());
+		logger.fine("Account Generated : " + account.toString());
 		
 		client.addAccount(account, 1L);
 		
 		//Getting a new account objectr with same instanceId
 		account = AccountGenerator.generateAccount(1L);
-		logger.info("new account being added : " + account.toString());
+		logger.fine("new account being added : " + account.toString());
 		client.addAccount(account, 1L);
 		
 		
@@ -54,10 +65,10 @@ public class BonusPayoutCloudantClientTest {
 	@Test
 	public void testAddMultipleInstanceIdSameAccountNumber() {
 		AccountDataObject account = AccountGenerator.generateAccount();
-		logger.info("Account Generated : " + account.toString());
+		logger.fine("Account Generated : " + account.toString());
 		client.addAccount(account, AccountGenerator.getRandomInt());
 		
-		logger.info("Account Generated : " + account.toString());
+		logger.fine("Account Generated : " + account.toString());
 		client.addAccount(account, AccountGenerator.getRandomInt());
 		
 	}
@@ -65,7 +76,7 @@ public class BonusPayoutCloudantClientTest {
 	@Test(expected = DocumentConflictException.class)
 	public void testAddDuplicateRecord() throws Exception{
 		AccountDataObject account = AccountGenerator.generateAccount();
-		logger.info("Account Generated : " + account.toString());
+		logger.fine("Account Generated : " + account.toString());
 		client.addAccount(account, 3L);;
 		
 		account.setBalance(500);
@@ -76,7 +87,7 @@ public class BonusPayoutCloudantClientTest {
 	@Test
 	public void getAccountsForInstanceId(){
 		AccountDataObject account = AccountGenerator.generateAccount();
-		logger.info("Account Generated : " + account.toString());
+		logger.fine("Account Generated : " + account.toString());
 		
 		int startingAccountNumber = account.getAccountNumber();
 		long instanceId = AccountGenerator.getRandomInt();
@@ -87,7 +98,7 @@ public class BonusPayoutCloudantClientTest {
 			account.setAccountNumber(account.getAccountNumber()+ 1);
 		}
 		
-		logger.info("startingAccountNumber " + startingAccountNumber + " instanceId " + instanceId);
+		logger.fine("startingAccountNumber " + startingAccountNumber + " instanceId " + instanceId);
 		
 		
 		
