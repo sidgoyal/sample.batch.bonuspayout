@@ -53,7 +53,6 @@ public class ValidationDBReadChunkListener implements ChunkListener, BonusPayout
     @BatchProperty(name = "cloudant.apiKey.password")
     private String password;
 
-
     @Inject
     private JobContext jobCtx;
 
@@ -64,8 +63,6 @@ public class ValidationDBReadChunkListener implements ChunkListener, BonusPayout
 
 	private boolean initializedClient = false;
     
-
-
 
     /**
      * Grab checkpoint value from StepContext, and set ResultSet

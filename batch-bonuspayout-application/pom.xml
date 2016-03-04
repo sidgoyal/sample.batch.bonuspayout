@@ -81,7 +81,6 @@
 			<version>7.0</version>
 			<scope>provided</scope>
 		</dependency>
-
 		<dependency>
 			<groupId>com.cloudant</groupId>
 			<artifactId>cloudant-client</artifactId>
@@ -93,7 +92,6 @@
 			<version>1.10</version>
 			<scope>test</scope>
 		</dependency>
-
 		<dependency>
 			<groupId>net.sf.expectit</groupId>
 			<artifactId>expectit-core</artifactId>
