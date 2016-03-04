@@ -3,7 +3,6 @@
     <!-- Enable features -->
     <featureManager>
         <feature>batchManagement-1.0</feature>
-        <feature>localConnector-1.0</feature>
         <!-- This sample can work with or without CDI configured -->
         <feature>cdi-1.2</feature>
     </featureManager>
@@ -46,7 +45,7 @@
 
     <!-- inbound (HTTPS) keystore -->
     <keyStore id="defaultTrustStore" 
-               location="${java.home}/jre/lib/security/cacerts" password="changeit"/>
+               location="${java.home}/lib/security/cacerts" password="changeit"/>
 
     <authorization-roles id="com.ibm.ws.batch">
         <security-role name="batchSubmitter">

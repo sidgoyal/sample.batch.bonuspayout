@@ -163,7 +163,7 @@
 				<version>0.4.0</version>
 				<configuration>
 					<imageName>sidgoyal/bonuspayout-runtime</imageName>
-					<dockerDirectory>${basedir}/bonuspayout-runtime</dockerDirectory>
+					<dockerDirectory>${basedir}/docker</dockerDirectory>
 					<resources>
 						<resource>
 							<targetPath>derby</targetPath>
@@ -202,7 +202,6 @@
 							<goal>build</goal>
 						</goals>
 					</execution>
-					
 				</executions>
 			</plugin>
 			<plugin>

@@ -57,7 +57,7 @@
 		<!-- EDIT ME (or override on command line) -->
 		<serverHost>localhost</serverHost>
 		<httpsPort>9443</httpsPort>
-		
+
 		<!-- DON'T EDIT after this point -->
 
 		<!-- liberty plugin default, passed to integration test -->
@@ -272,28 +272,6 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-dependency-plugin</artifactId>
                 <version>2.6</version>
-                <configuration>
-                    <failOnMissingWebXml>false</failOnMissingWebXml>
-                </configuration>
-            </plugin>
-            <!-- Nothing to run in test phase -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-surefire-plugin</artifactId>
-                <version>2.19</version>
-                <executions>
-                    <execution>
-                        <id>default-test</id>
-                        <configuration>
-                            <skip>false</skip>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <groupId>net.wasdev.wlp.maven.plugins</groupId>
-                <artifactId>liberty-maven-plugin</artifactId>
-                <version>1.2-SNAPSHOT</version>
                 <executions>
                     <execution>
                         <id>copy-process-resources</id>
@@ -386,12 +364,6 @@
 			</activation>
 			<properties>
 				<wlpInstallDir>${wlp.install.dir}</wlpInstallDir>
-			</properties>
-		</profile>
-		<profile>
-			<id>dev</id>
-			<properties>
-				<environment>dev</environment>
 			</properties>
 		</profile>
 	</profiles>
