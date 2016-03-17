@@ -1,15 +1,17 @@
 from sidgoyal/bonuspayout-runtime
 
-RUN mkdir -p /opt/ibm/wlp/usr/servers/BonusPayout/dropins 
+RUN /opt/ibm/wlp/bin/server create BonusPayout 
 
-ADD server.xml /opt/ibm/wlp/usr/servers/BonusPayout 
+ENV WLP_OUTPUT_DIR=/opt/ibm/wlp/usr/servers/  LOG_DIR=/logs
 
-ADD server.versioned.xml /opt/ibm/wlp/usr/servers/BonusPayout   
+ADD server.xml /opt/ibm/wlp/usr/servers/BonusPayout
+
+ADD server.versioned.xml /opt/ibm/wlp/usr/servers/BonusPayout 
 
 ADD bootstrap.properties /opt/ibm/wlp/usr/servers/BonusPayout
 
 COPY BonusPayout.war /opt/ibm/wlp/usr/servers/BonusPayout/dropins
 
-RUN  installUtility install --acceptLicense BonusPayout
+#VOLUME /opt/ibm/wlp/usr/shared/resources/BatchDB 
 
 CMD ["/opt/ibm/wlp/bin/server", "run", "BonusPayout"]

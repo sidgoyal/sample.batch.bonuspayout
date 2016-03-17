@@ -43,8 +43,10 @@
 							</includes>
 						</fileset>
 						<fileset>
-							<directory>${shared.resource.directory}/BatchDB</directory>
 							<directory>${shared.resource.directory}/derby</directory>
+						</fileset>
+						<fileset>
+							<directory>${shared.resource.directory}/BatchDB</directory>
 						</fileset>
 					</filesets>
 				</configuration>
@@ -179,7 +181,7 @@
 						<!--imageTag>latest</imageTag -->
 					</imageTags>
 					<serverId>docker-hub</serverId>
-					<pushImage>true</pushImage>
+					<pushImage>${pushImage}</pushImage>
 				</configuration>
 				<executions>
 					<execution>

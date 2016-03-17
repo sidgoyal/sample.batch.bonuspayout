@@ -328,7 +328,7 @@
 						<!--imageTag>latest</imageTag -->
 					</imageTags>
 					<serverId>docker-hub</serverId>
-					<pushImage>true</pushImage>
+					<pushImage>${pushImage}</pushImage>
 				</configuration>
 				<executions>
 					<execution>
