@@ -32,7 +32,7 @@
 		<!-- These next two will be accessed via the JobContext, rather than via injected 
 			through @Inject @BatchProperty injection -->
 		<property name="fileEncoding" value="#{jobParameters['fileEncoding']}" />
-		<property name="generateFileNameRoot" value="#{jobParameters['generateFileNameRoot']}?:/csv/BonusPayout" />
+		<property name="generateFileNameRoot" value="#{jobParameters['generateFileNameRoot']}?:/csv/BonusPayout;" />
 
 	</properties>
 

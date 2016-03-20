@@ -1,0 +1,38 @@
+version: '2'
+
+services: 
+
+        app:
+                image: sidgoyal/bonuspayout-app
+
+                container_name: app
+
+                ports:
+                       - "9443:9443"
+
+                volumes:
+                       - data:/opt/ibm/wlp/usr/shared/resources/BatchDB 
+                       - csv:/csv
+
+
+        results:
+                image: sidgoyal/bonuspayout.results.api
+
+
+                depends_on: 
+                        - app
+        
+                container_name: results
+
+                ports: 
+                        - "9080:9443"
+
+                volumes: 
+                        - csv:/csv
+
+
+volumes:
+        data:
+
+        csv:
+        
