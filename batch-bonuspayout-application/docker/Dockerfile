@@ -1,5 +1,7 @@
 from sidgoyal/bonuspayout-runtime
 
+MAINTAINER siddgoyal@gmail.com
+
 RUN /opt/ibm/wlp/bin/server create BonusPayout 
 
 ENV WLP_OUTPUT_DIR=/opt/ibm/wlp/usr/servers/  LOG_DIR=/opt/ibm/wlp/usr/servers/BonusPayout
