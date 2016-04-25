@@ -1,9 +1,10 @@
-<server description="Server for BonusPayout sample">
+<server description="Dispatcher">
+    <include location="common.config.xml" />
+
 
     <!-- Enable features -->
     <featureManager>
         <feature>wasJmsClient-2.0</feature>
-    
         <feature>batchManagement-1.0</feature>
         <!-- This sample can work with or without CDI configured -->
         <feature>cdi-1.2</feature>
@@ -11,22 +12,10 @@
 
     <!-- To access this server from a remote client add a host attribute to
         the following element, e.g. host="*" -->
-    <httpEndpoint host="*" httpPort="9080" httpsPort="9443" id="defaultHttpEndpoint"/>
-
-    <library id="DerbyLib">
-        <fileset dir="${shared.resource.dir}/derby"/>
-    </library>
+    <httpEndpoint host="*" httpPort="9081" httpsPort="9444" id="defaultHttpEndpoint"/>
 
     <logging traceSpecification="BonusPayout=all=enabled:com.ibm.ws.jbatch.jms.*=all:com.ibm.ws.jbatch.container.*=all"/>
     
-    <dataSource id="batchDB" jndiName="jdbc/batch" type="javax.sql.XADataSource">
-        <jdbcDriver libraryRef="DerbyLib"/>
-        <!-- The 'databaseName' is set in bootstrap.properties -->
-        <properties.derby.embedded createDatabase="false" databaseName="${db.url}" user="user" password="pass"/>
-    </dataSource>
-
-    <databaseStore dataSourceRef="batchDB" id="BatchDatabaseStore" schema="JBATCH" tablePrefix=""/>
-
     <batchPersistence jobStoreRef="BatchDatabaseStore"/>
 
     <applicationMonitor updateTrigger="mbean"/>
@@ -57,5 +46,8 @@
             <user name="jane"/>
         </security-role>
     </authorization-roles>
+
+
+<batchJmsExecutor activationSpecRef="batchAS" queueRef="batchQ" />
 
 </server>

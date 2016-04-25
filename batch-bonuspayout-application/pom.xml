@@ -196,7 +196,7 @@
 					<assemblyArtifact>
 						<groupId>com.ibm.websphere.appserver.runtime</groupId>
 						<artifactId>wlp-webProfile7</artifactId>
-						<version>8.5.5.8</version>
+						<version>8.5.5.9</version>
 						<type>zip</type>
 					</assemblyArtifact>
 					<installDirectory>${wlp.install.dir}</installDirectory>
@@ -309,10 +309,11 @@
 			<plugin>
 				<groupId>com.spotify</groupId>
 				<artifactId>docker-maven-plugin</artifactId>
-				<version>0.4.0</version>
+				<version>0.4.6</version>
 				<configuration>
-					<imageName>sidgoyal/bonuspayout-app</imageName>
-					<dockerDirectory>${basedir}/docker</dockerDirectory>
+					<serverId>docker-hub</serverId>
+					<pushImage>${pushImage}</pushImage>
+					<pullOnBuild>true</pullOnBuild>
 					<resources>
 						<resource>
 							<targetPath>/</targetPath>
@@ -320,37 +321,75 @@
 							<include>server.xml</include>
 							<include>server.versioned.xml</include>
 							<include>bootstrap.properties</include>
-
+							<include>server.dispatcher.xml</include>
+							<include>server.executor.xml</include>
+							<include>common.config.xml</include>
 						</resource>
 					</resources>
-					<imageTags>
-						<imageTag>${project.version}</imageTag>
-						<!--imageTag>latest</imageTag -->
-					</imageTags>
-					<serverId>docker-hub</serverId>
-					<pushImage>${pushImage}</pushImage>
 				</configuration>
 				<executions>
+				    <execution>
+                        <id>docker-remove-old-images</id>
+                        <phase>clean</phase>
+                        <goals>
+                            <goal>removeImage</goal>
+                        </goals>
+                        <configuration>
+                        <imageName>sidgoyal/bonuspayout-app</imageName>
+                        <imageTags>
+                        <imageTag>singleServer</imageTag>
+                        <imageTag>dispatcherServer</imageTag>
+                        <imageTag>executorServer</imageTag>
+                        <imageTag>latest</imageTag>
+                        
+                        </imageTags>
+                        </configuration>
+                    </execution>
+				
 					<execution>
-						<id>docker-remove-old-images</id>
-						<phase>deploy</phase>
-						<goals>
-							<goal>removeImage</goal>
-						</goals>
-						<configuration>
-							<imageTags>
-								<imageTag>${project.version}</imageTag>
-								<imageTag>latest</imageTag>
-							</imageTags>
-						</configuration>
-					</execution>
-					<execution>
-						<id>docker-build-runtime-image</id>
+						<id>docker-build-image-singleServer</id>
 						<phase>deploy</phase>
 						<goals>
 							<goal>build</goal>
 						</goals>
+						<configuration>
+							<imageName>sidgoyal/bonuspayout-app:singleServer</imageName>
+							<dockerDirectory>${basedir}/docker/single-server</dockerDirectory>
+							<imageTags>
+							<imageTag>latest</imageTag>
+							</imageTags>
+						</configuration>
 					</execution>
+					<execution>
+						<id>docker-build-image-dispatcher</id>
+						<phase>deploy</phase>
+						<goals>
+							<goal>build</goal>
+						</goals>
+						<configuration>
+							<imageName>sidgoyal/bonuspayout-app:dispatcherServer</imageName>
+							<dockerDirectory>${basedir}/docker/multi-server</dockerDirectory>
+							<buildArgs>
+								<SERVER_XML>server.dispatcher.xml</SERVER_XML>
+							</buildArgs>
+							<noCache>true</noCache>
+						</configuration>
+					</execution>
+					<execution>
+                        <id>docker-build-image-executor</id>
+                        <phase>deploy</phase>
+                        <goals>
+                            <goal>build</goal>
+                        </goals>
+                        <configuration>
+                            <imageName>sidgoyal/bonuspayout-app:executorServer</imageName>
+                            <dockerDirectory>${basedir}/docker/multi-server</dockerDirectory>
+                            <buildArgs>
+                                <SERVER_XML>server.executor.xml</SERVER_XML>
+                            </buildArgs>
+                            <noCache>true</noCache>
+                        </configuration>
+                    </execution>
 				</executions>
 			</plugin>
 			<plugin>
@@ -395,19 +434,11 @@
 				<cloudant.apiKey.password>${env.cloudant.apiKey.password}</cloudant.apiKey.password>
 			</properties>
 		</profile>
-		<!-- profile>
-			<id>prod</id>
-			<activation>
-				<activeByDefault>false</activeByDefault>
-			</activation>
-			<properties>
-
-				<cloudant.username>79cfd3d0-8e3c-416a-83ef-362ebb4745ec-</cloudant.username>
-				<cloudant.database>cloudant-bonuspayout</cloudant.database>
-				<cloudant.apiKey>thamingenumpathistiverha</cloudant.apiKey>
-				<cloudant.apiKey.password>${env.cloudant.apiKey.password}</cloudant.apiKey.password>
-			</properties>
-		</profile -->
+		<!-- profile> <id>prod</id> <activation> <activeByDefault>false</activeByDefault> 
+			</activation> <properties> <cloudant.username>79cfd3d0-8e3c-416a-83ef-362ebb4745ec-</cloudant.username> 
+			<cloudant.database>cloudant-bonuspayout</cloudant.database> <cloudant.apiKey>thamingenumpathistiverha</cloudant.apiKey> 
+			<cloudant.apiKey.password>${env.cloudant.apiKey.password}</cloudant.apiKey.password> 
+			</properties> </profile -->
 
 
 	</profiles>

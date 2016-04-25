@@ -1,0 +1,31 @@
+<server description="Server for BonusPayout sample">
+
+    <!-- Enable features -->
+    <featureManager>
+	<feature>wasJmsServer-1.0</feature>
+    </featureManager>
+
+<wasJmsEndpoint host="*" 
+		  wasJmsPort="7280" 
+		  wasJmsSSLPort="7290" 
+		  enabled="true"> 
+</wasJmsEndpoint>
+
+<messagingEngine>
+	<queue id="batchQ" 
+		forceReliability="ReliablePersistent" 
+		receiveAllowed="true"/>
+</messagingEngine>
+
+    <ssl id="defaultSSLConfig"
+         keyStoreRef="defaultKeyStore"
+         trustStoreRef="defaultTrustStore"
+          />
+
+    <keyStore id="defaultKeyStore" password="Liberty" />
+
+    <!-- inbound (HTTPS) keystore -->
+    <keyStore id="defaultTrustStore" 
+               location="${java.home}/lib/security/cacerts" password="changeit"/>
+
+</server>

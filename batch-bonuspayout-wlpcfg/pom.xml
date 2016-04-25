@@ -16,10 +16,12 @@
 		<fs>${file.separator}</fs>
 		<shared.resource.directory>${basedir}${fs}shared${fs}resources</shared.resource.directory>
 		<ddl.dir>${shared.resource.directory}${fs}ddls</ddl.dir>
+		<server.config.dir>${basedir}/servers/BonusPayout/</server.config.dir>
 		<!-- Though this property can be set across all projects from the invoker 
 			(command line), it is convenient to define the default separately to avoid 
 			Derby path issues esp. on Windows -->
 		<db.url>${shared.resource.directory}${fs}BatchDB</db.url>
+		<derby.version>10.12.1.1</derby.version>
 	</properties>
 	<build>
 		<plugins>
@@ -78,7 +80,7 @@
 				<version>2.6</version>
 				<executions>
 					<execution>
-						<id>copy-process-resources</id>
+						<id>download-derby-embedded</id>
 						<phase>process-resources</phase>
 						<goals>
 							<goal>copy</goal>
@@ -88,7 +90,7 @@
 								<artifactItem>
 									<groupId>org.apache.derby</groupId>
 									<artifactId>derby</artifactId>
-									<version>10.10.1.1</version>
+									<version>${derby.version}</version>
 									<type>jar</type>
 									<overWrite>false</overWrite>
 									<outputDirectory>${shared.resource.directory}/derby</outputDirectory>
@@ -97,6 +99,26 @@
 							</artifactItems>
 						</configuration>
 					</execution>
+					<execution>
+                        <id>download-derby-client</id>
+                        <phase>process-resources</phase>
+                        <goals>
+                            <goal>copy</goal>
+                        </goals>
+                        <configuration>
+                            <artifactItems>
+                                <artifactItem>
+                                    <groupId>org.apache.derby</groupId>
+                                    <artifactId>derbyclient</artifactId>
+                                    <version>${derby.version}</version>
+                                    <type>jar</type>
+                                    <overWrite>false</overWrite>
+                                    <outputDirectory>${shared.resource.directory}/derby</outputDirectory>
+                                    <destFileName>derbyclient.jar</destFileName>
+                                </artifactItem>
+                            </artifactItems>
+                        </configuration>
+                    </execution>
 				</executions>
 			</plugin>
 			<!-- Used to create and prime the database with the BonusPayout application-level 
@@ -164,46 +186,79 @@
 				<artifactId>docker-maven-plugin</artifactId>
 				<version>0.4.0</version>
 				<configuration>
-					<imageName>sidgoyal/bonuspayout-runtime</imageName>
-					<dockerDirectory>${basedir}/docker</dockerDirectory>
-					<resources>
-						<resource>
-							<targetPath>derby</targetPath>
-							<directory>${shared.resource.directory}/derby</directory>
-						</resource>
-						<resource>
-							<targetPath>BatchDB</targetPath>
-							<directory>${shared.resource.directory}/BatchDB</directory>
-						</resource>
-					</resources>
-					<imageTags>
-						<imageTag>${project.version}</imageTag>
-						<!--imageTag>latest</imageTag -->
-					</imageTags>
 					<serverId>docker-hub</serverId>
 					<pushImage>${pushImage}</pushImage>
+					<pullOnBuild>true</pullOnBuild>
 				</configuration>
 				<executions>
 					<execution>
-						<id>docker-remove-old-images</id>
-						<phase>deploy</phase>
-						<goals>
-							<goal>removeImage</goal>
-						</goals>
-						<configuration>
-							<imageTags>
-								<imageTag>${project.version}</imageTag>
-								<imageTag>latest</imageTag>
-							</imageTags>
-						</configuration>
-					</execution>
-					<execution>
-						<id>docker-build-runtime-image</id>
+						<id>docker-build-single-server</id>
 						<phase>deploy</phase>
 						<goals>
 							<goal>build</goal>
 						</goals>
+						<configuration>
+							<imageName>sidgoyal/bonuspayout-runtime:singleServer</imageName>
+							<dockerDirectory>${basedir}/docker/single-server</dockerDirectory>
+							<resources>
+								<resource>
+									<targetPath>derby</targetPath>
+									<directory>${shared.resource.directory}/derby</directory>
+								</resource>
+								<resource>
+									<targetPath>BatchDB</targetPath>
+									<directory>${shared.resource.directory}/BatchDB</directory>
+								</resource>
+							</resources>
+						</configuration>
 					</execution>
+                    <execution>
+                        <id>docker-build-multi-server</id>
+                        <phase>deploy</phase>
+                        <goals>
+                            <goal>build</goal>
+                        </goals>
+                        <configuration>
+                            <imageName>sidgoyal/bonuspayout-runtime:multiServer</imageName>
+                            <dockerDirectory>${basedir}/docker/multi-server</dockerDirectory>
+                            <resources>
+                                <resource>
+                                    <targetPath>/</targetPath>
+                                    <directory>${shared.resource.directory}/derby</directory>
+                                    <include>derbyclient.jar</include>
+                                </resource>
+                            </resources>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>docker-build-messaging-server</id>
+                        <phase>deploy</phase>
+                        <goals>
+                            <goal>build</goal>
+                        </goals>
+                        <configuration>
+                            <imageName>sidgoyal/messaging-server</imageName>
+                            <dockerDirectory>${basedir}/docker/messaging-server</dockerDirectory>
+                            <resources>
+                                <resource>
+                                    <targetPath>/</targetPath>
+                                    <directory>${server.config.dir}</directory>
+                                    <include>server.message-engine.xml</include>
+                                </resource>
+                            </resources>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>docker-build-derby-server</id>
+                        <phase>deploy</phase>
+                        <goals>
+                            <goal>build</goal>
+                        </goals>
+                        <configuration>
+                            <imageName>sidgoyal/derby-server</imageName>
+                            <dockerDirectory>${basedir}/docker/derby-server</dockerDirectory>
+                        </configuration>
+                    </execution>
 				</executions>
 			</plugin>
 			<plugin>
