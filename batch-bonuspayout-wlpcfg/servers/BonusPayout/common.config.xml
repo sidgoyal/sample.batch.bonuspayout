@@ -7,14 +7,14 @@
     <dataSource id="batchDB" jndiName="jdbc/batch" type="javax.sql.XADataSource">
         <jdbcDriver libraryRef="DerbyLib"/>
         <!-- The 'databaseName' is set in bootstrap.properties -->
-        <properties.derby.client createDatabase="create" databaseName="${shared.resource.dir}/BATCHDB" serverName="${env.DB_HOST}" user="user" password="pass"  portNumber="${env.DB_PORT}"/>
+        <properties.derby.client createDatabase="create" databaseName="BATCHDB" serverName="${env.DB_HOST}" user="user" password="pass"  portNumber="${env.DB_PORT}"/>
     </dataSource>
 
     <databaseStore id="BatchDatabaseStore" datasourceRef="batchDB" schema="JBATCH" tablePrefix=""/>
 
 
 <jmsConnectionFactory id="batchCF" jndiName="jms/batch/batchCF">
-    <properties.wasJms remoteServerAddress="${env.MESSAGE_HOST}:{env.MESSAGE_PORT}:BootstrapBasicMessaging"/>
+    <properties.wasJms remoteServerAddress="${env.MESSAGE_HOST}:${env.MESSAGE_PORT}:BootstrapBasicMessaging"/>
 </jmsConnectionFactory>
 
 <jmsQueue id="batchQ" jndiName="jms/batch/batchQ">
@@ -22,10 +22,10 @@
 </jmsQueue>
 
 <jmsActivationSpec id="batchAS">
-    <properties.wasJms messageSelector="com_ibm_ws_batch_work_type = Job"
+    <properties.wasJms messageSelector="com_ibm_ws_batch_work_type = 'Job'"
                        destinationRef="batchQ"
                        destinationType="javax.jms.Queue"
-                       remoteServerAddress="${env.MESSAGE_HOST}:{env.MESSAGE_PORT}:BootstrapBasicMessaging" />
+                       remoteServerAddress="${env.MESSAGE_HOST}:${env.MESSAGE_PORT}:BootstrapBasicMessaging" />
 </jmsActivationSpec>
 
 

@@ -20,17 +20,12 @@ services:
                        - messageEngine
                        - derby
                 environment:
-                       DERBY_HOST: derby
+                       DB_HOST: derby
                        MESSAGE_HOST: messageEngine
 
                 ports:
                        - "8443:9443"
                        - "8080:9080"
-                links:
-                       - derby
-                       - messageEngine
-                volumes:
-                       - csv:/csv
 
         executor:
                 image: sidgoyal/bonuspayout-app:executorServer
@@ -39,10 +34,9 @@ services:
                        - messageEngine
                        - derby
                        - dispatcher
-                links:
-                       - derby
-                       - messageEngine
-
+                environment:
+                       DB_HOST: derby
+                       MESSAGE_HOST: messageEngine
                 volumes:
                        - csv:/csv
 
