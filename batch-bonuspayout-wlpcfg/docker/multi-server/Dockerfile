@@ -9,5 +9,3 @@ COPY derbyclient.jar /opt/ibm/wlp/usr/shared/resources/derbyclient/derbyclient.j
 # Clean-up artifacts related to derby-embedded which is only need by sinlgeServer
 RUN rm -rf /opt/ibm/wlp/usr/shared/resources/BatchDB \ 
     && rm -rf /opt/ibm/wlp/usr/shared/resources/derby
-
-
