@@ -15,4 +15,6 @@ RUN wget -q http://www-us.apache.org/dist//db/derby/db-derby-10.12.1.1/db-derby-
 ENV JAVA_HOME=/opt/ibm/java/jre \
     DERBY_INSTALL=/opt/derby
 
+RUN mkdir /derbyDatabases
+
 CMD ["/opt/derby/bin/startNetworkServer","-h","0.0.0.0"]

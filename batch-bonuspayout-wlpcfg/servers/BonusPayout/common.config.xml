@@ -7,7 +7,7 @@
     <dataSource id="batchDB" jndiName="jdbc/batch" type="javax.sql.XADataSource">
         <jdbcDriver libraryRef="DerbyLib"/>
         <!-- The 'databaseName' is set in bootstrap.properties -->
-        <properties.derby.client createDatabase="create" databaseName="BATCHDB" serverName="${env.DB_HOST}" user="user" password="pass"  portNumber="${env.DB_PORT}"/>
+        <properties.derby.client createDatabase="create" databaseName="derbyDatabases/BATCHDB" serverName="${env.DB_HOST}" user="user" password="pass"  portNumber="${env.DB_PORT}"/>
     </dataSource>
 
     <databaseStore id="BatchDatabaseStore" datasourceRef="batchDB" schema="JBATCH" tablePrefix=""/>

@@ -11,6 +11,8 @@ services:
                 container_name: derby
                 depends_on:
                       - messageEngine
+                volumes:
+                      - batchDB:/derbyDatabases
 
 
         dispatcher:
@@ -53,5 +55,6 @@ services:
 
 volumes:
         csv:
+        batchDB:
 
 
