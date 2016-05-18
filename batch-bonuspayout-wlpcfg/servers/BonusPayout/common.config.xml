@@ -28,5 +28,4 @@
                        remoteServerAddress="${env.MESSAGE_HOST}:${env.MESSAGE_PORT}:BootstrapBasicMessaging" />
 </jmsActivationSpec>
 
-
 </server>
